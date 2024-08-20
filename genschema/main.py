@@ -336,7 +336,7 @@ if __name__ == '__main__':
     parser.add_argument('-o', '--output', default=None, help="Where to write JSON data.")
     parser.add_argument('-a', '--analyze', default=None, action='append', help='What YAML dictionaries can be analyzed.')
     parser.add_argument('-g', '--generate', type=bool, default=False, help='Generate code.')
-    parser.add_argument('input')
+    parser.add_argument('input', help='YAML input file')
     args = parser.parse_args()
 
     # Validate the input filename, making certain it is a text file and
