@@ -90,7 +90,14 @@ class JSONPrintListener(Listener):
 
     # Enter a parse tree produced by JSONParser#Atom.
     def enterAtom(self, ctx:JSONParser.AtomContext):
-        pass
+        s = ctx.getText()
+        if s == 'true':
+            s = 'True'
+        elif s == 'false':
+            s = 'False'
+        elif s == 'null':
+            s = 'None'
+        print(s)
 
     # Exit a parse tree produced by JSONParser#Atom.
     def exitAtom(self, ctx:JSONParser.AtomContext):
