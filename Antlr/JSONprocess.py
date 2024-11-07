@@ -23,14 +23,16 @@ class JSONPrintListener(Listener):
         global DictionaryLevel
         DictionaryLevel = DictionaryLevel + 1
         if DictionaryLevel == 1:
-            print('"TOP":', end=' ')
-        print('LEVEL:' + str(DictionaryLevel))
+            print('top =')
+        print(DictionaryLevel*'\t' + '\n' + DictionaryLevel*'\t'+'{')
+        print(DictionaryLevel*'\t' + '"LEVEL":' + str(DictionaryLevel))
 
 
     # Exit a parse tree produced by JSONParser#AnObject.
     def exitAnObject(self, ctx:JSONParser.AnObjectContext):
         global DictionaryLevel
         DictionaryLevel = DictionaryLevel - 1
+        print(DictionaryLevel*'\t' + '}')
 
 
     # Enter a parse tree produced by JSONParser#EmptyObject.
@@ -67,6 +69,7 @@ class JSONPrintListener(Listener):
     def enterPair(self, ctx:JSONParser.PairContext):
         s = ctx.STRING().getText()
         global DictionaryLevel
+        print()
         print(DictionaryLevel*'\t' + s + ":", end='')
 
     # Exit a parse tree produced by JSONParser#pair.
