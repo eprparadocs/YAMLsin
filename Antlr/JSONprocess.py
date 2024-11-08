@@ -4,14 +4,14 @@ from JSONListener import JSONListener as Listener
 from JSONParser import JSONParser as JSONParser
 import sys
 
-DictionaryLevel = None
 InArrayFlag = False
+LevelName = None
 
 class JSONPrintListener(Listener):
 
     def enterJson(self, ctx:JSONParser.JsonContext):
-        global DictionaryLevel
-        DictionaryLevel = 0
+        global LevelName
+        LevelName = 'TOP'
 
     # Exit a parse tree produced by JSONParser#json.
     def exitJson(self, ctx:JSONParser.JsonContext):
@@ -20,19 +20,11 @@ class JSONPrintListener(Listener):
 
     # Enter a parse tree produced by JSONParser#AnObject.
     def enterAnObject(self, ctx:JSONParser.AnObjectContext):
-        global DictionaryLevel
-        DictionaryLevel = DictionaryLevel + 1
-        if DictionaryLevel == 1:
-            print('top =')
-        print(DictionaryLevel*'\t' + '\n' + DictionaryLevel*'\t'+'{')
-        print(DictionaryLevel*'\t' + '"LEVEL":' + str(DictionaryLevel))
-
+        print( '[')
 
     # Exit a parse tree produced by JSONParser#AnObject.
     def exitAnObject(self, ctx:JSONParser.AnObjectContext):
-        global DictionaryLevel
-        DictionaryLevel = DictionaryLevel - 1
-        print(DictionaryLevel*'\t' + '}')
+        print( '],')
 
 
     # Enter a parse tree produced by JSONParser#EmptyObject.
@@ -54,11 +46,11 @@ class JSONPrintListener(Listener):
     def exitArrayOfValues(self, ctx:JSONParser.ArrayOfValuesContext):
         global InArrayFlag
         InArrayFlag = False
-        print(']')
+        print('],')
 
     # Enter a parse tree produced by JSONParser#EmptyArray.
     def enterEmptyArray(self, ctx:JSONParser.EmptyArrayContext):
-        print("[]")
+        print("[],")
 
     # Exit a parse tree produced by JSONParser#EmptyArray.
     def exitEmptyArray(self, ctx:JSONParser.EmptyArrayContext):
@@ -68,13 +60,16 @@ class JSONPrintListener(Listener):
     # Enter a parse tree produced by JSONParser#pair.
     def enterPair(self, ctx:JSONParser.PairContext):
         s = ctx.STRING().getText()
-        global DictionaryLevel
-        print()
-        print(DictionaryLevel*'\t' + s + ":", end='')
+        global LevelName
+        LevelName = LevelName + '.' + s[1:-1]
+        print( '["' + LevelName + '",', end='')
 
     # Exit a parse tree produced by JSONParser#pair.
     def exitPair(self, ctx:JSONParser.PairContext):
-        pass
+        print('],')
+        global LevelName
+        LevelName, post = LevelName.rsplit('.', 1)
+
 
 
     # Enter a parse tree produced by JSONParser#String.
