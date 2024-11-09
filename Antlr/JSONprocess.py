@@ -7,6 +7,8 @@ import sys
 InArrayFlag = False
 LevelName = None
 
+__VERSION__ = '0.1'
+
 class JSONPrintListener(Listener):
 
     def enterJson(self, ctx:JSONParser.JsonContext):
@@ -118,16 +120,33 @@ class JSONPrintListener(Listener):
 
 
 def main():
-    input_stream = FileStream(sys.argv[1])
-    #  input_stream = StdinStream()
-    #  input_stream = InputStream(<string>)
-    lexer = Lexer(input_stream)
-    stream = CommonTokenStream(lexer)
-    parser = JSONParser(stream)
-    tree = parser.json()
-    printer = JSONPrintListener()
-    walker = ParseTreeWalker()
-    walker.walk(printer, tree)
+    from argparse import ArgumentParser
+    parser = ArgumentParser(prog='YAML compile', description='Read YAML script and compile down requirements.')
+    parser.add_argument('-o', '--outdir', default='.', action='store', help="Where to write the output")
+    parser.add_argument('-p', '--print', default=False, action='store_true', help="Create Pretty Print output as well")
+    parser.add_argument('-v', '--version', default=False, action='store_true', help="Print version on stdout and exit.")
+    parser.add_argument('input', nargs='*')
+    args = parser.parse_args()
+
+    # See if we are just going to output the version and exit.
+    if args.version:
+        print("YAMLcompile Version "+ __VERSION__)
+        sys.exit(0)
+
+    # Make certain the outdir is really present and a directory.
+
+    # Process the input, one file at a time.
+    for f in args.input:
+        input_stream = FileStream(f)
+        #  input_stream = StdinStream()
+        #  input_stream = InputStream(<string>)
+        lexer = Lexer(input_stream)
+        stream = CommonTokenStream(lexer)
+        parser = JSONParser(stream)
+        tree = parser.json()
+        printer = JSONPrintListener()
+        walker = ParseTreeWalker()
+        walker.walk(printer, tree)
 
 if __name__ == '__main__':
     main()
