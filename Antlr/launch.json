@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: JSONprocess.py",
+            "type": "python", 
+            "request": "launch",
+            "program": "${workspaceFolder}/JSONprocess.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "-p".
+                "--output", "${workspaceFolder}",
+                "${workspaceFolder}/EasternPolicies.json"
+            ]
+        }
+    ]
+}
+
