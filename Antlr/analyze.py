@@ -8,7 +8,7 @@ def list_to_dict(input_list):
         key = item[0]
         value = item[1]
 
-        if isinstance(value, list):
+        if isinstance(value, list) and len(value) > 0 and isinstance(value[0], list):
             result[key] = list_to_dict(value)
         else:
             result[key] = value
