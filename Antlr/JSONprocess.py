@@ -4,7 +4,6 @@ from JSONListener import JSONListener as Listener
 from JSONParser import JSONParser as JSONParser
 import sys
 
-InArrayFlag = False
 LevelName = None
 
 __VERSION__ = '0.1'
@@ -47,14 +46,10 @@ class JSONPrintListener(Listener):
 
     # Enter a parse tree produced by JSONParser#ArrayOfValues.
     def enterArrayOfValues(self, ctx:JSONParser.ArrayOfValuesContext):
-        global InArrayFlag
-        InArrayFlag = True
-        print('[', end=' ', file=self.fptr)
+        print('[', file=self.fptr)
 
     # Exit a parse tree produced by JSONParser#ArrayOfValues.
     def exitArrayOfValues(self, ctx:JSONParser.ArrayOfValuesContext):
-        global InArrayFlag
-        InArrayFlag = False
         print('],', file=self.fptr)
 
     # Enter a parse tree produced by JSONParser#EmptyArray.
@@ -84,8 +79,7 @@ class JSONPrintListener(Listener):
     # Enter a parse tree produced by JSONParser#String.
     def enterString(self, ctx:JSONParser.StringContext):
         global InArrayFlag
-        end = ' ' if InArrayFlag else '\n'
-        print(ctx.getText() + ', ', end=end, file=self.fptr)
+        print(ctx.getText() + ', ', file=self.fptr)
 
     # Exit a parse tree produced by JSONParser#String.
     def exitString(self, ctx:JSONParser.StringContext):
@@ -94,6 +88,8 @@ class JSONPrintListener(Listener):
 
     # Enter a parse tree produced by JSONParser#Atom.
     def enterAtom(self, ctx:JSONParser.AtomContext):
+        global InArrayFlag
+        end = ' ' if InArrayFlag else '\n'
         s = ctx.getText()
         if s == 'true':
             s = 'True'
@@ -101,7 +97,7 @@ class JSONPrintListener(Listener):
             s = 'False'
         elif s == 'null':
             s = 'None'
-        print(s + ', ', file=self.fptr)
+        print(s + ', ', end=end, file=self.fptr)
 
     # Exit a parse tree produced by JSONParser#Atom.
     def exitAtom(self, ctx:JSONParser.AtomContext):
